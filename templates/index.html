@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transcritor de Vídeo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="tag">● Powered by Groq · Whisper</div>
+    <h1>Transcritor<br>de <span>Vídeo</span></h1>
+    <p class="subtitle">Envie qualquer vídeo — o áudio é extraído no navegador e transcrito automaticamente.</p>
+  </header>
+
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="fileInput" accept="video/*,audio/*">
+    <span class="drop-icon">🎬</span>
+    <div class="drop-label">Arraste o vídeo aqui</div>
+    <div class="drop-sub">ou clique para selecionar · MP4, MOV, AVI, MKV…</div>
+  </div>
+
+  <div class="file-info" id="fileInfo">
+    <span class="file-icon">📹</span>
+    <span class="file-name" id="fileName">—</span>
+    <span class="file-size" id="fileSize">—</span>
+    <button class="remove-btn" id="removeBtn">✕</button>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+  <button class="btn" id="transcribeBtn" disabled>Transcrever vídeo →</button>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-label">
+      <span id="progressLabel">Aguarde…</span>
+      <span id="progressPct"></span>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="log-line" id="logLine"></div>
+  </div>
+
+  <div class="result-wrap" id="resultWrap">
+    <div class="result-header">
+      <div class="result-title">Transcrição concluída</div>
+      <button class="copy-btn" id="copyBtn">Copiar texto</button>
+    </div>
+    <div class="result-box" id="resultBox"></div>
+    <div class="word-count" id="wordCount"></div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
