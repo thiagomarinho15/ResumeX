@@ -3,54 +3,212 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transcritor de Vídeo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <title>ResumeX — Transcritor e Resumidor de Vídeo com IA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-<div class="container">
-  <header>
-    <div class="tag">● Powered by Groq · Whisper</div>
-    <h1>Transcritor<br>de <span>Vídeo</span></h1>
-    <p class="subtitle">Envie qualquer vídeo — o áudio é extraído no navegador e transcrito automaticamente.</p>
-  </header>
 
-  <div class="drop-zone" id="dropZone">
-    <input type="file" id="fileInput" accept="video/*,audio/*">
-    <span class="drop-icon">🎬</span>
-    <div class="drop-label">Arraste o vídeo aqui</div>
-    <div class="drop-sub">ou clique para selecionar · MP4, MOV, AVI, MKV…</div>
+<!-- ─── Navbar ──────────────────────────────────────────────────────────── -->
+<nav class="navbar">
+  <div></div>
+  <a href="#" class="navbar-brand">ResumeX</a>
+  <a href="#tool" class="navbar-cta">Começar →</a>
+</nav>
+
+<!-- ─── Hero ────────────────────────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="hero-inner animate-up">
+    <div class="hero-badge">✦ Powered by Groq · Whisper</div>
+    <h1 class="hero-title">
+      Transcreva e resuma<br>qualquer vídeo com IA
+    </h1>
+    <p class="hero-sub">
+      Faça upload de um vídeo, extraia o áudio e gere um resumo detalhado
+      em segundos — tudo direto no navegador, sem instalar nada.
+    </p>
+    <a href="#tool" class="hero-btn">Começar agora →</a>
   </div>
+</section>
 
-  <div class="file-info" id="fileInfo">
-    <span class="file-icon">📹</span>
-    <span class="file-name" id="fileName">—</span>
-    <span class="file-size" id="fileSize">—</span>
-    <button class="remove-btn" id="removeBtn">✕</button>
-  </div>
+<!-- ─── How it works ────────────────────────────────────────────────────── -->
+<section class="section" id="como-funciona">
+  <div class="section-inner">
+    <p class="section-label">Como funciona</p>
+    <h2 class="section-title">Três passos, resultado instantâneo</h2>
+    <div class="steps-grid">
 
-  <div class="error-box" id="errorBox"></div>
-  <button class="btn" id="transcribeBtn" disabled>Transcrever vídeo →</button>
+      <div class="step-card animate-up" style="--delay:.05s">
+        <div class="step-number">01</div>
+        <div class="step-icon">🎬</div>
+        <h3 class="step-title">Envie o vídeo</h3>
+        <p class="step-desc">Arraste ou selecione qualquer arquivo MP4, MOV, AVI ou MKV. O áudio é extraído diretamente no seu navegador.</p>
+      </div>
 
-  <div class="progress-wrap" id="progressWrap">
-    <div class="progress-label">
-      <span id="progressLabel">Aguarde…</span>
-      <span id="progressPct"></span>
+      <div class="step-card animate-up" style="--delay:.12s">
+        <div class="step-number">02</div>
+        <div class="step-icon">🎙️</div>
+        <h3 class="step-title">Transcrição automática</h3>
+        <p class="step-desc">O áudio é enviado ao modelo Whisper via API Groq e convertido em texto com alta precisão, em português.</p>
+      </div>
+
+      <div class="step-card animate-up" style="--delay:.19s">
+        <div class="step-number">03</div>
+        <div class="step-icon">📄</div>
+        <h3 class="step-title">Resumo com IA</h3>
+        <p class="step-desc">Escolha seu modelo — Groq, Gemini ou local — e gere um resumo estruturado em markdown. Exporte como PDF com um clique.</p>
+      </div>
+
     </div>
-    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
-    <div class="log-line" id="logLine"></div>
   </div>
+</section>
 
-  <div class="result-wrap" id="resultWrap">
-    <div class="result-header">
-      <div class="result-title">Transcrição concluída</div>
-      <button class="copy-btn" id="copyBtn">Copiar texto</button>
+<!-- ─── Features ────────────────────────────────────────────────────────── -->
+<section class="section section--alt" id="features">
+  <div class="section-inner">
+    <p class="section-label">Recursos</p>
+    <h2 class="section-title">Tudo que você precisa</h2>
+    <div class="features-grid">
+
+      <div class="feature-card animate-up" style="--delay:.05s">
+        <span class="feature-icon">⚡</span>
+        <h4 class="feature-title">Rápido e gratuito</h4>
+        <p class="feature-desc">Sem cadastro, sem custos. Use sua própria chave de API e transcreva vídeos sem limites.</p>
+      </div>
+
+      <div class="feature-card animate-up" style="--delay:.10s">
+        <span class="feature-icon">🌐</span>
+        <h4 class="feature-title">Múltiplos modelos</h4>
+        <p class="feature-desc">Groq Llama 3.3, Gemini Flash, Gemma 2 ou Qwen3 rodando localmente via Ollama.</p>
+      </div>
+
+      <div class="feature-card animate-up" style="--delay:.15s">
+        <span class="feature-icon">🔒</span>
+        <h4 class="feature-title">Privacidade total</h4>
+        <p class="feature-desc">O áudio é processado localmente no navegador antes de ser enviado. Nenhum vídeo é armazenado.</p>
+      </div>
+
+      <div class="feature-card animate-up" style="--delay:.20s">
+        <span class="feature-icon">📑</span>
+        <h4 class="feature-title">Resumo em Markdown</h4>
+        <p class="feature-desc">Resultado formatado com seções, listas e destaques. Exporte como PDF com tema claro em um clique.</p>
+      </div>
+
+      <div class="feature-card animate-up" style="--delay:.25s">
+        <span class="feature-icon">🎯</span>
+        <h4 class="feature-title">Qualquer formato</h4>
+        <p class="feature-desc">Suporta MP4, MOV, AVI, MKV, WebM, MP3, WAV e muito mais. Vídeos longos são divididos automaticamente.</p>
+      </div>
+
+      <div class="feature-card animate-up" style="--delay:.30s">
+        <span class="feature-icon">💻</span>
+        <h4 class="feature-title">Modelos locais</h4>
+        <p class="feature-desc">Rode o resumo offline com Gemma 2 ou Qwen3 via Ollama. Ideal para conteúdo sensível ou sem internet.</p>
+      </div>
+
     </div>
-    <div class="result-box" id="resultBox"></div>
-    <div class="word-count" id="wordCount"></div>
   </div>
-</div>
+</section>
 
+<!-- ─── Tool ─────────────────────────────────────────────────────────────── -->
+<section class="section" id="tool">
+  <div class="section-inner section-inner--narrow">
+    <p class="section-label">Ferramenta</p>
+    <h2 class="section-title">Transcrever vídeo</h2>
+
+    <div class="card">
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" accept="video/*,audio/*">
+        <span class="drop-icon">🎬</span>
+        <div class="drop-label">Arraste o vídeo aqui</div>
+        <div class="drop-sub">ou clique para selecionar · MP4, MOV, AVI, MKV…</div>
+      </div>
+
+      <div class="file-info" id="fileInfo">
+        <span class="file-icon">📹</span>
+        <span class="file-name" id="fileName">—</span>
+        <span class="file-size" id="fileSize">—</span>
+        <button class="remove-btn" id="removeBtn">✕</button>
+      </div>
+
+      <div class="error-box" id="errorBox"></div>
+      <div class="rate-limit-box" id="rateLimitBox"></div>
+
+      <button class="btn btn-primary" id="transcribeBtn" disabled>Transcrever vídeo →</button>
+    </div>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label">
+        <span id="progressLabel">Aguarde…</span>
+        <span id="progressPct"></span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+      <div class="log-line" id="logLine"></div>
+    </div>
+
+    <div class="result-wrap" id="resultWrap">
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-title">Transcrição concluída</div>
+          <button class="copy-btn" id="copyBtn">Copiar texto</button>
+        </div>
+        <div class="result-box" id="resultBox"></div>
+        <div class="word-count" id="wordCount"></div>
+
+        <div class="provider-toggle">
+          <span class="provider-label">☁ Cloud</span>
+          <button class="provider-btn active" data-provider="groq">Groq · Llama 3.3</button>
+          <button class="provider-btn" data-provider="gemini">Gemini · Flash</button>
+          <span class="provider-sep"></span>
+          <span class="provider-label">⚡ Local</span>
+          <button class="provider-btn" data-provider="gemma2">Gemma 2 · 9B</button>
+          <button class="provider-btn" data-provider="qwen3">Qwen3 · 8B</button>
+        </div>
+
+        <button class="btn" id="summaryBtn">Gerar resumo →</button>
+      </div>
+    </div>
+
+    <div class="summary-wrap" id="summaryWrap">
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-title result-title--summary">Resumo gerado</div>
+          <div class="result-actions">
+            <button class="copy-btn" id="copySummaryBtn">Copiar</button>
+            <button class="copy-btn" id="pdfBtn">PDF ↓</button>
+          </div>
+        </div>
+        <div class="result-box summary-markdown" id="summaryBox"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── Footer ───────────────────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-brand">ResumeX</span>
+    <span class="footer-sep">·</span>
+    <span class="footer-copy">Transcrição e resumo de vídeos com IA</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script>
+  // Intersection Observer para animações de entrada
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const delay = e.target.style.getPropertyValue('--delay') || '0s';
+        setTimeout(() => e.target.classList.add('visible'), parseFloat(delay) * 1000);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.animate-up').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>

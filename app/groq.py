@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import requests
 
 _TRANSCRIPTION_URL = "https://api.groq.com/openai/v1/audio/transcriptions"
