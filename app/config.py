@@ -27,6 +27,7 @@ class Config:
 
     GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
     GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+    OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "localhost")
 
     FLASK_HOST = os.environ.get("FLASK_HOST", "0.0.0.0")
     FLASK_PORT = int(os.environ.get("FLASK_PORT", os.environ.get("PORT", "8765")))

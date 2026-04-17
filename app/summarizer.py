@@ -71,7 +71,7 @@ def stream_summary_groq(api_key: str, transcription: str):
     return _gen()
 
 
-def stream_summary_ollama(model: str, transcription: str):
+def stream_summary_ollama(model: str, transcription: str, host: str = "localhost"):
     """Summarize using a local Ollama model (Gemma 2 or Qwen3) via streaming.
 
     Uses Ollama's native /api/chat endpoint (NDJSON streaming).
@@ -79,7 +79,7 @@ def stream_summary_ollama(model: str, transcription: str):
     """
     try:
         response = requests.post(
-            "http://localhost:11434/api/chat",
+            f"http://{host}:11434/api/chat",
             json={
                 "model": model,
                 "messages": [

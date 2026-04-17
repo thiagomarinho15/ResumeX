@@ -97,7 +97,7 @@ def resumir():
         if provider == "gemini":
             gen = stream_summary_gemini(current_app.config["GEMINI_API_KEY"], transcricao)
         elif provider in _OLLAMA_MODELS:
-            gen = stream_summary_ollama(_OLLAMA_MODELS[provider], transcricao)
+            gen = stream_summary_ollama(_OLLAMA_MODELS[provider], transcricao, current_app.config["OLLAMA_HOST"])
         else:
             gen = stream_summary_groq(current_app.config["GROQ_API_KEY"], transcricao)
         return Response(gen, content_type="text/plain; charset=utf-8")
