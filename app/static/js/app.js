@@ -327,7 +327,6 @@ summaryBtn.addEventListener('click', async () => {
 });
 
 copySummaryBtn.addEventListener('click', () => {
-  // copia o texto puro (sem tags HTML)
   const text = summaryBox.innerText || summaryBox.textContent;
   navigator.clipboard.writeText(text).then(() => {
     copySummaryBtn.textContent = 'Copiado ✓';
@@ -336,9 +335,6 @@ copySummaryBtn.addEventListener('click', () => {
 });
 
 pdfBtn.addEventListener('click', () => {
-  // Abre uma janela limpa com tema claro e aciona o diálogo de impressão do
-  // navegador (Salvar como PDF). Mais confiável que html2canvas para conteúdo
-  // renderizado com CSS variables de tema escuro.
   const html = `<!DOCTYPE html>
 <html>
 <head>

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Criar conta — ResumeX{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card">
+    <h1 class="auth-title">Criar conta</h1>
+    <p class="auth-sub">Comece a transcrever e resumir vídeos com IA</p>
+
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.nome.label(class="form-label") }}
+        {{ form.nome(class="form-input", placeholder="Seu nome", autocomplete="name") }}
+        {% if form.nome.errors %}
+          <span class="form-error">{{ form.nome.errors[0] }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-input", placeholder="seu@email.com", autocomplete="email") }}
+        {% if form.email.errors %}
+          <span class="form-error">{{ form.email.errors[0] }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {{ form.senha.label(class="form-label") }}
+        {{ form.senha(class="form-input", placeholder="Mínimo 8 caracteres", autocomplete="new-password") }}
+        {% if form.senha.errors %}
+          <span class="form-error">{{ form.senha.errors[0] }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {{ form.confirmar_senha.label(class="form-label") }}
+        {{ form.confirmar_senha(class="form-input", placeholder="Repita a senha", autocomplete="new-password") }}
+        {% if form.confirmar_senha.errors %}
+          <span class="form-error">{{ form.confirmar_senha.errors[0] }}</span>
+        {% endif %}
+      </div>
+
+      {{ form.submit(class="btn btn-primary") }}
+    </form>
+
+    <p class="auth-link">
+      Já tem conta? <a href="{{ url_for('login') }}">Entrar</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -9,4 +9,6 @@ COPY . .
 
 EXPOSE 8765
 
-CMD ["gunicorn", "run:app", "--bind", "0.0.0.0:8765", "--workers", "2", "--timeout", "180"]
+ENV FLASK_APP=main.py
+
+CMD ["bash", "entrypoint.sh"]

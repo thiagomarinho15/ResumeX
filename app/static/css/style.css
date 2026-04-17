@@ -67,18 +67,154 @@ body {
   text-decoration: none;
 }
 
+.navbar-left {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-user {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+.navbar-right {
+  grid-column: 3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .navbar-cta {
   font-size: 12px;
   font-weight: 600;
   color: var(--text);
   letter-spacing: 0.03em;
-  text-align: right;
-  grid-column: 3;
   text-decoration: none;
   transition: opacity 0.2s;
 }
 
 .navbar-cta:hover { opacity: 0.55; }
+
+/* ─── Flash messages ─────────────────────────────────────────────────── */
+
+.flash-container {
+  position: fixed;
+  top: calc(var(--navbar-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 320px;
+  max-width: 560px;
+}
+
+.flash {
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.flash--success  { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+.flash--danger   { background: #fdecea; color: #b71c1c; border: 1px solid #ef9a9a; }
+.flash--warning  { background: #fff8e1; color: #e65100; border: 1px solid #ffcc80; }
+.flash--info     { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+
+/* ─── Auth pages ─────────────────────────────────────────────────────── */
+
+.auth-section {
+  min-height: calc(100vh - var(--navbar-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.auth-card {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 40px 40px 36px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+}
+
+.auth-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #888;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+}
+
+.form-input::placeholder { color: #bbb; }
+
+.form-error {
+  display: block;
+  font-size: 11px;
+  color: var(--error);
+  margin-top: 5px;
+}
+
+.auth-link {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 20px;
+}
+
+.auth-link a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.auth-link a:hover { opacity: 0.6; }
 
 /* ─── Hero ───────────────────────────────────────────────────────────── */
 

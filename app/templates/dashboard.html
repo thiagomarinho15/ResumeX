@@ -1,20 +1,7 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ResumeX — Transcritor e Resumidor de Vídeo com IA</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}ResumeX — Transcritor e Resumidor de Vídeo com IA{% endblock %}
 
-<!-- ─── Navbar ──────────────────────────────────────────────────────────── -->
-<nav class="navbar">
-  <div></div>
-  <a href="#" class="navbar-brand">ResumeX</a>
-  <a href="#tool" class="navbar-cta">Começar →</a>
-</nav>
+{% block content %}
 
 <!-- ─── Hero ────────────────────────────────────────────────────────────── -->
 <section class="hero" id="hero">
@@ -72,8 +59,8 @@
 
       <div class="feature-card animate-up" style="--delay:.05s">
         <span class="feature-icon">⚡</span>
-        <h4 class="feature-title">Rápido e gratuito</h4>
-        <p class="feature-desc">Sem cadastro, sem custos. Use sua própria chave de API e transcreva vídeos sem limites.</p>
+        <h4 class="feature-title">Rápido e poderoso</h4>
+        <p class="feature-desc">Transcreva vídeos em segundos com Groq Whisper e gere resumos estruturados com os melhores modelos de IA.</p>
       </div>
 
       <div class="feature-card animate-up" style="--delay:.10s">
@@ -194,10 +181,12 @@
   </div>
 </footer>
 
+{% endblock %}
+
+{% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 <script>
-  // Intersection Observer para animações de entrada
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -207,8 +196,6 @@
       }
     });
   }, { threshold: 0.15 });
-
   document.querySelectorAll('.animate-up').forEach(el => observer.observe(el));
 </script>
-</body>
-</html>
+{% endblock %}
