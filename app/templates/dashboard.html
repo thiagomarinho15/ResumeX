@@ -143,13 +143,35 @@
         <div class="word-count" id="wordCount"></div>
 
         <div class="provider-toggle">
-          <span class="provider-label">☁ Cloud</span>
+
+          <!-- Standard — disponível para todos -->
+          <span class="tier-pill tier-pill--standard">Standard</span>
           <button class="provider-btn active" data-provider="groq">Groq · Llama 3.3</button>
           <button class="provider-btn" data-provider="gemini">Gemini · Flash</button>
+          <button class="provider-btn" data-provider="gemma2">Gemma 2 · Local</button>
+          <button class="provider-btn" data-provider="qwen3">Qwen3 · Local</button>
+
           <span class="provider-sep"></span>
-          <span class="provider-label">⚡ Local</span>
-          <button class="provider-btn" data-provider="gemma2">Gemma 2 · 9B</button>
-          <button class="provider-btn" data-provider="qwen3">Qwen3 · 8B</button>
+
+          <!-- Pro — bloqueado para Standard -->
+          <span class="tier-pill tier-pill--pro">Pro</span>
+          {% set pro_locked = user_tier == 'standard' %}
+          <button class="provider-btn{% if pro_locked %} provider-btn--locked{% endif %}"
+                  data-provider="groq-qwen"
+                  {% if pro_locked %}data-required-tier="Pro"{% endif %}>
+            Qwen3 · Groq{% if pro_locked %} 🔒{% endif %}
+          </button>
+          <span class="provider-sep"></span>
+
+          <!-- Max — bloqueado para Standard e Pro -->
+          <span class="tier-pill tier-pill--max">Max</span>
+          {% set max_locked = user_tier in ('standard', 'pro') %}
+          <button class="provider-btn{% if max_locked %} provider-btn--locked{% endif %}"
+                  data-provider="groq-gptoss"
+                  {% if max_locked %}data-required-tier="Max"{% endif %}>
+            GPT-OSS 120B{% if max_locked %} 🔒{% endif %}
+          </button>
+
         </div>
 
         <button class="btn" id="summaryBtn">Gerar resumo →</button>
@@ -184,6 +206,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script>const USER_TIER = "{{ user_tier }}";</script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 <script>

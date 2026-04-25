@@ -246,6 +246,11 @@ let rateLimitReached = false;
 providerBtns.forEach((btn) => {
   btn.addEventListener('click', () => {
     if (rateLimitReached) return;
+    if (btn.classList.contains('provider-btn--locked')) {
+      const required = btn.dataset.requiredTier || 'superior';
+      showError(`Este modelo requer o plano ${required}. Peça ao administrador para atualizar seu plano.`);
+      return;
+    }
     providerBtns.forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
     selectedProvider = btn.dataset.provider;
@@ -287,6 +292,11 @@ summaryBtn.addEventListener('click', async () => {
       const msg = await response.text();
       blockPlatform(msg);
       return;
+    }
+
+    if (response.status === 403) {
+      const msg = await response.text();
+      throw new Error(msg);
     }
 
     if (response.status === 503) {

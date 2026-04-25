@@ -794,6 +794,20 @@ input[type="file"] { display: none; }
 
 .provider-btn:hover         { border-color: var(--text); color: var(--text); }
 .provider-btn.active        { border-color: var(--text); color: var(--text); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.provider-btn--locked       { opacity: .45; cursor: not-allowed; }
+.provider-btn--locked:hover { border-color: var(--border); color: var(--muted); }
+
+.tier-pill {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 100px;
+}
+.tier-pill--standard { background: #e8f5e9; color: #2e7d32; }
+.tier-pill--pro      { background: #fff3e0; color: #e65100; }
+.tier-pill--max      { background: #f3e5f5; color: #6a1b9a; }
 
 /* ─── Summary ────────────────────────────────────────────────────────── */
 

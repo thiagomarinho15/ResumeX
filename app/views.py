@@ -6,11 +6,32 @@ from flask_login import current_user, login_required, login_user, logout_user
 from . import app, db
 from .forms import LoginForm, RegisterForm
 from .groq import proxy_transcription
+from .key_manager import get_gemini_key, get_groq_gptoss_key, get_groq_qwen_key, get_groq_transcription_key
 from .models import Role, User
 from .security import hash_password, verify_password
-from .summarizer import OllamaOfflineError, RateLimitError, stream_summary_gemini, stream_summary_groq, stream_summary_ollama
+from .summarizer import (
+    OllamaOfflineError,
+    ProviderUnavailableError,
+    RateLimitError,
+    stream_summary_gemini,
+    stream_summary_groq,
+    stream_summary_groq_gptoss,
+    stream_summary_groq_qwen,
+    stream_summary_ollama,
+)
 
 _tentativas: dict[str, list] = {}
+
+# Providers disponíveis por tier (cada tier inclui os do tier anterior)
+_TIER_PERMISSIONS: dict[str, set[str]] = {
+    "standard": {"groq", "gemini", "gemma2", "qwen3"},
+    "pro":      {"groq", "gemini", "gemma2", "qwen3", "groq-qwen"},
+    "max":      {"groq", "gemini", "gemma2", "qwen3", "groq-qwen", "groq-gptoss"},
+}
+_PRO_ONLY = _TIER_PERMISSIONS["pro"] - _TIER_PERMISSIONS["standard"]
+_MAX_ONLY = _TIER_PERMISSIONS["max"] - _TIER_PERMISSIONS["pro"]
+
+_OLLAMA_MODELS = {"gemma2": "gemma2:9b", "qwen3": "qwen3:8b"}
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -71,7 +92,7 @@ def sair():
 @app.route("/")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template("dashboard.html", user_tier=current_user.tier or "standard")
 
 
 @app.route("/transcrever", methods=["POST"])
@@ -79,7 +100,7 @@ def dashboard():
 def transcrever():
     body = request.get_data()
     content_type = request.content_type or ""
-    api_key = current_app.config["GROQ_API_KEY"]
+    api_key = get_groq_transcription_key()
     result, status = proxy_transcription(api_key, body, content_type)
     return Response(result, status=status, content_type="text/plain; charset=utf-8")
 
@@ -90,18 +111,34 @@ def resumir():
     data = request.get_json(force=True) or {}
     transcricao = data.get("transcricao", "")
     provider = data.get("provider", "groq")
+    user_tier = current_user.tier or "standard"
 
-    _OLLAMA_MODELS = {"gemma2": "gemma2:9b", "qwen3": "qwen3:8b"}
+    allowed = _TIER_PERMISSIONS.get(user_tier, _TIER_PERMISSIONS["standard"])
+    if provider not in allowed:
+        tier_required = "Max" if provider in _MAX_ONLY else "Pro"
+        return Response(
+            f"Este modelo requer o plano {tier_required}. Peça ao administrador para atualizar seu plano.",
+            status=403,
+            content_type="text/plain; charset=utf-8",
+        )
 
     try:
         if provider == "gemini":
-            gen = stream_summary_gemini(current_app.config["GEMINI_API_KEY"], transcricao)
+            gen = stream_summary_gemini(get_gemini_key(), transcricao)
         elif provider in _OLLAMA_MODELS:
             gen = stream_summary_ollama(_OLLAMA_MODELS[provider], transcricao, current_app.config["OLLAMA_HOST"])
-        else:
-            gen = stream_summary_groq(current_app.config["GROQ_API_KEY"], transcricao)
+        elif provider == "groq-qwen":
+            gen = stream_summary_groq_qwen(get_groq_qwen_key(), transcricao, current_app.config["GROQ_QWEN_MODEL"])
+        elif provider == "groq-gptoss":
+            gen = stream_summary_groq_gptoss(get_groq_gptoss_key(), transcricao, current_app.config["GROQ_GPTOSS_MODEL"])
+        else:  # groq llama — padrão
+            gen = stream_summary_groq(get_groq_qwen_key(), transcricao)
+
         return Response(gen, content_type="text/plain; charset=utf-8")
+
     except RateLimitError as e:
         return Response(str(e), status=429, content_type="text/plain; charset=utf-8")
     except OllamaOfflineError as e:
+        return Response(str(e), status=503, content_type="text/plain; charset=utf-8")
+    except ProviderUnavailableError as e:
         return Response(str(e), status=503, content_type="text/plain; charset=utf-8")

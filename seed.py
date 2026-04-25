@@ -19,10 +19,11 @@ with app.app_context():
             nome="Admin",
             email="admin@resumex.com",
             senha=hash_password("admin123"),
+            tier="max",
         )
         admin.roles.append(admin_role)
         db.session.add(admin)
         db.session.commit()
-        print("✓ Admin criado: admin@resumex.com / admin123")
+        print("✓ Admin criado: admin@resumex.com / admin123 (tier: max)")
     else:
         print("Admin já existe.")

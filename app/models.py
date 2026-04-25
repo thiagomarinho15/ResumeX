@@ -23,6 +23,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), unique=True, nullable=False)
     senha = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean, default=True)
+    tier = db.Column(db.String(20), nullable=False, default="standard")
     roles = db.relationship("Role", secondary="roles_users", backref="users")
     documents = db.relationship("Document", backref="author", lazy=True)
 

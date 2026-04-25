@@ -25,8 +25,37 @@ class Config:
     else:
         SQLALCHEMY_DATABASE_URI = "sqlite:///resumex.db"
 
-    GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
-    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+    # ── Groq ──────────────────────────────────────────────────────────────────
+    # 3 chaves dedicadas — cada uma com rate limit independente
+    GROQ_TRANSCRIPTION_KEY = os.environ.get("GROQ_TRANSCRIPTION_KEY", "")  # Whisper
+    GROQ_QWEN_KEY = os.environ.get("GROQ_QWEN_KEY", "")                    # Qwen + Llama
+    GROQ_GPTOSS_KEY = os.environ.get("GROQ_GPTOSS_KEY", "")                # GPT-OSS 120B
+
+    # IDs de modelo — verificar nomes exatos em console.groq.com/docs/models
+    GROQ_QWEN_MODEL = os.environ.get("GROQ_QWEN_MODEL", "qwen-qwq-32b")
+    GROQ_GPTOSS_MODEL = os.environ.get("GROQ_GPTOSS_MODEL", "")  # obrigatório definir no .env
+
+    # ── Gemini ────────────────────────────────────────────────────────────────
+    # Pool de 3 chaves (Google AI Studio) — round-robin
+    GEMINI_KEYS = [
+        k for k in [
+            os.environ.get("GEMINI_KEY_1", os.environ.get("GEMINI_API_KEY", "")),
+            os.environ.get("GEMINI_KEY_2", ""),
+            os.environ.get("GEMINI_KEY_3", ""),
+        ]
+        if k
+    ]
+
+    # ── Mistral ───────────────────────────────────────────────────────────────
+    MISTRAL_KEYS = [
+        k for k in [
+            os.environ.get("MISTRAL_KEY_1", ""),
+            os.environ.get("MISTRAL_KEY_2", ""),
+            os.environ.get("MISTRAL_KEY_3", ""),
+        ]
+        if k
+    ]
+
     OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "localhost")
 
     FLASK_HOST = os.environ.get("FLASK_HOST", "0.0.0.0")

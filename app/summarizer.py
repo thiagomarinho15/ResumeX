@@ -20,20 +20,25 @@ class OllamaOfflineError(Exception):
     pass
 
 
-def stream_summary_groq(api_key: str, transcription: str):
-    """Summarize using Groq (llama-3.3-70b-versatile) via streaming SSE.
+class ProviderUnavailableError(Exception):
+    pass
 
-    Makes the HTTP request eagerly so RateLimitError is raised before Flask
-    starts streaming, allowing the route to return a proper 429 response.
-    """
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def _stream_openai_compat(base_url: str, api_key: str, model: str, transcription: str):
+    """Streaming SSE para qualquer provider com API compatível com OpenAI."""
+    if not api_key:
+        raise ProviderUnavailableError(f"Chave de API não configurada para o modelo '{model}'.")
+
     response = requests.post(
-        "https://api.groq.com/openai/v1/chat/completions",
+        f"{base_url}/chat/completions",
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
         json={
-            "model": "llama-3.3-70b-versatile",
+            "model": model,
             "messages": [
                 {"role": "system", "content": _SYSTEM_PROMPT},
                 {"role": "user", "content": _USER_PROMPT.format(transcription=transcription)},
@@ -46,7 +51,10 @@ def stream_summary_groq(api_key: str, transcription: str):
     )
 
     if response.status_code == 429:
-        raise RateLimitError("Limite de requisições do Groq atingido.")
+        raise RateLimitError(f"Limite de requisições atingido ({model}).")
+
+    if response.status_code in (402, 401, 403):
+        raise ProviderUnavailableError(f"Acesso negado pelo provider ({model}). Verifique saldo ou chave de API.")
 
     response.raise_for_status()
 
@@ -71,12 +79,65 @@ def stream_summary_groq(api_key: str, transcription: str):
     return _gen()
 
 
-def stream_summary_ollama(model: str, transcription: str, host: str = "localhost"):
-    """Summarize using a local Ollama model (Gemma 2 or Qwen3) via streaming.
+# ── Groq (Standard) ───────────────────────────────────────────────────────────
 
-    Uses Ollama's native /api/chat endpoint (NDJSON streaming).
-    Raises OllamaOfflineError if Ollama isn't running.
-    """
+def stream_summary_groq(api_key: str, transcription: str):
+    """Llama 3.3 70B via Groq — tier Standard."""
+    return _stream_openai_compat(
+        "https://api.groq.com/openai/v1",
+        api_key,
+        "llama-3.3-70b-versatile",
+        transcription,
+    )
+
+
+# ── Groq (Pro) ────────────────────────────────────────────────────────────────
+
+def stream_summary_groq_qwen(api_key: str, transcription: str, model: str):
+    """Qwen via Groq — tier Pro. Model ID configurável via GROQ_QWEN_MODEL."""
+    if not model:
+        raise ProviderUnavailableError("GROQ_QWEN_MODEL não definido no .env.")
+    return _stream_openai_compat(
+        "https://api.groq.com/openai/v1",
+        api_key,
+        model,
+        transcription,
+    )
+
+
+# ── Groq (Max) ────────────────────────────────────────────────────────────────
+
+def stream_summary_groq_gptoss(api_key: str, transcription: str, model: str):
+    """GPT-OSS 120B via Groq — tier Max. Model ID configurável via GROQ_GPTOSS_MODEL."""
+    if not model:
+        raise ProviderUnavailableError(
+            "GROQ_GPTOSS_MODEL não definido no .env. "
+            "Verifique o ID do modelo em console.groq.com/docs/models."
+        )
+    return _stream_openai_compat(
+        "https://api.groq.com/openai/v1",
+        api_key,
+        model,
+        transcription,
+    )
+
+
+# ── Mistral ───────────────────────────────────────────────────────────────────
+
+def stream_summary_mistral(api_key: str, transcription: str, model: str):
+    """Mistral via La Plateforme — Small (Pro) ou Large (Max)."""
+    return _stream_openai_compat(
+        "https://api.mistral.ai/v1",
+        api_key,
+        model,
+        transcription,
+    )
+
+
+# ── Ollama (local) ────────────────────────────────────────────────────────────
+
+def stream_summary_ollama(model: str, transcription: str, host: str = "localhost"):
+    """Modelo local via Ollama (Gemma 2 ou Qwen3) — tier Standard."""
     try:
         response = requests.post(
             f"http://{host}:11434/api/chat",
@@ -114,11 +175,13 @@ def stream_summary_ollama(model: str, transcription: str, host: str = "localhost
     return _gen()
 
 
-def stream_summary_gemini(api_key: str, transcription: str):
-    """Summarize using Gemini 2.0 Flash (free tier) via streaming SSE.
+# ── Gemini ────────────────────────────────────────────────────────────────────
 
-    Same eager-request pattern as the Groq function.
-    """
+def stream_summary_gemini(api_key: str, transcription: str):
+    """Gemini 2.5 Flash via Google AI Studio — tier Standard."""
+    if not api_key:
+        raise ProviderUnavailableError("Chave Gemini não configurada.")
+
     response = requests.post(
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent",
         params={"key": api_key, "alt": "sse"},
